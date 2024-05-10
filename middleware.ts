@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 
-import authConfig from "@/auth.config";
+import authConfig from "@/next-auth-config/auth.config";
 import {
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
@@ -8,7 +8,7 @@ import {
   publicRoutes,
   adminRoutes,
   DEFAULT_FORBIDDEN_REDIRECT
-} from "@/routes";
+} from "@/next-auth-config/routes";
 import { useCheckAdminRole } from "./hooks/use-check-admin-role";
 
 const { auth } = NextAuth(authConfig);

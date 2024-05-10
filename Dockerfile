@@ -63,6 +63,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 # Uncomment this if you're using prisma, copies prisma files for linting
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --chown=nextjs:nodejs docker-bootstrap-app.sh ./
 
 USER nextjs
 
@@ -75,6 +76,7 @@ ENV HOSTNAME "0.0.0.0"
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
 # CMD ["npm", "run", "start:migrate:prod"]
+
 CMD ["./docker-bootstrap-app.sh"]
 
 

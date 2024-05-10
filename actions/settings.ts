@@ -3,14 +3,14 @@
 import * as z from "zod";
 import bcrypt from "bcryptjs";
 
-import { update } from "@/auth";
+import { update } from "@/next-auth-config/auth";
 import { db } from "@/lib/db";
 import { SettingsSchema } from "@/schemas";
 import { getUserByEmail, getUserById } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { generateVerificationToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail";
-import { ExtendedUser } from "@/next-auth";
+import { ExtendedUser } from "@/next-auth-config/next-auth";
 
 export const settings = async (
   values: z.infer<typeof SettingsSchema>

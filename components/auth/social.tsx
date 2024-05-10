@@ -6,7 +6,7 @@ import { FaGithub } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { DEFAULT_LOGIN_REDIRECT } from "@/next-auth-config/routes";
 
 export const Social = () => {
   const searchParams = useSearchParams();

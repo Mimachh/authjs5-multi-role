@@ -6,9 +6,9 @@ import Google from "next-auth/providers/google";
 
 import { LoginSchema } from "@/schemas";
 import { getUserByEmail, getUserById } from "@/data/user";
-import { getAccountByUserId } from "./data/account";
-import { db } from "./lib/db";
-import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation";
+import { getAccountByUserId } from "../data/account";
+import { db } from "../lib/db";
+import { getTwoFactorConfirmationByUserId } from "../data/two-factor-confirmation";
 import { Role } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
