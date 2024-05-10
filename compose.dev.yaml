@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  app:
+    container_name: frontend
+    build:
+      context: .
+      target: dev
+    # image: nextjs-dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://website_builder_saas:postgres@db:5432/website_builder_saas
+    depends_on:
+      - db
+    restart: unless-stopped
+    command: npm run docker:dev
+    volumes: 
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    develop:
+      watch:
+        - path: ./package.json
+          action: rebuild
+        - path: ./next.config.js
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
+        - path: .
+          target: /app
+          action: sync
+        - action: sync
+          path: ./src
+          target: /app/src
+          ignore:
+            - node_modules/
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: website_builder_saas
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: website_builder_saas
+    ports: 
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+volumes:
+  db:

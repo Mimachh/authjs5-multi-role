@@ -10,6 +10,7 @@ import { getUserByEmail, getUserById } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { generateVerificationToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail";
+import { ExtendedUser } from "@/next-auth";
 
 export const settings = async (
   values: z.infer<typeof SettingsSchema>
@@ -32,6 +33,8 @@ export const settings = async (
     values.newPassword = undefined;
     values.isTwoFactorEnabled = undefined;
   }
+
+ 
 
   if (values.email && values.email !== user.email) {
     const existingUser = await getUserByEmail(values.email);
@@ -71,8 +74,24 @@ export const settings = async (
 
   const updatedUser = await db.user.update({
     where: { id: dbUser.id },
+    include: {
+      roles: {
+        include: {
+          role: true
+        }
+      }
+    },
     data: {
-      ...values,
+      name: values.name,
+      email: values.email,
+      isTwoFactorEnabled: values.isTwoFactorEnabled,
+      password: values.password,
+      roles: {
+        create: values.roles.map((role) => ({
+          roleId: role.id,
+          // userId: dbUser.id
+        })) 
+      }
     }
   });
 
@@ -81,9 +100,12 @@ export const settings = async (
       name: updatedUser.name,
       email: updatedUser.email,
       isTwoFactorEnabled: updatedUser.isTwoFactorEnabled,
-      role: updatedUser.role,
+      roles: updatedUser.roles.map((role) => {
+        return { role: role.role };
+      })
     }
   });
+
 
   return { success: "Settings Updated!" }
 }

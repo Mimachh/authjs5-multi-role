@@ -4,7 +4,7 @@ type RoleWrapper = {
     role: Role;
   };
 
-export const useCheckAdminRole = async (roles: RoleWrapper[] | null | undefined) => {
+export const useCheckAdminRole = async (roles?: RoleWrapper[] | null | undefined) => {
      const adminRoleSlug = "admin"
 
     if(roles) {

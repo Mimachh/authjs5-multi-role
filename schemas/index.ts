@@ -3,7 +3,7 @@ import { Role } from "@prisma/client";
 
 
 const RoleSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string(),
   slug: z.string(),
 });
@@ -11,7 +11,7 @@ const RoleSchema = z.object({
 export const SettingsSchema = z.object({
   name: z.optional(z.string()),
   isTwoFactorEnabled: z.optional(z.boolean()),
-  roles: z.array(RoleSchema),
+  roles: z.array(RoleSchema.pick({ id: true })),
   email: z.optional(z.string().email()),
   password: z.optional(z.string().min(6)),
   newPassword: z.optional(z.string().min(6)),
