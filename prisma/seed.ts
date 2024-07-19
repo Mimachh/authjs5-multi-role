@@ -7,12 +7,16 @@ async function main() {
   console.log("Seeding started");
   const rolesArray = [
     {
+      name: "SUPER ADMIN",
+      slug: "super_admin",
+    },
+    {
       name: "ADMIN",
       slug: "admin",
     },
     {
-      name: "AUTHOR",
-      slug: "author",
+      name: "SUBSCRIBER",
+      slug: "subscriber",
     },
     {
       name: "USER",
@@ -25,23 +29,19 @@ async function main() {
 
   const hashedPassword = await bcrypt.hash("password", 10);
   const user = {
-    email: "admin@admin.com",
+    email: "superadmin@superadmin.com",
     password: hashedPassword,
     emailVerified: new Date(),
     isTwoFactorEnabled: false,
   };
-  const adminRole = await db.role.findUnique({ where: { slug: "admin" } });
-  const authorRole = await db.role.findUnique({ where: { slug: "author" } });
-  const userRole = await db.role.findUnique({ where: { slug: "user" } });
-  if (adminRole && authorRole && userRole) {
+  const superAdminRole = await db.role.findUnique({ where: { slug: "super_admin" } });
+  if (superAdminRole) {
     await prisma.user.create({
       data: {
         ...user,
         roles: {
           create: [
-            { roleId: adminRole.id },
-            { roleId: authorRole.id },
-            { roleId: userRole.id },
+            { roleId: superAdminRole.id },
           ],
         },
       },

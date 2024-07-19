@@ -1,4 +1,4 @@
-// prisma/schema.prisma
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -23,7 +23,7 @@ model User {
   twoFactorConfirmation TwoFactorConfirmation?
   roles                 UserRole[]
 
-  articles Article[]
+  entreprise Entreprise?
 }
 
 model Role {
@@ -97,51 +97,60 @@ model TwoFactorConfirmation {
   @@unique([userId])
 }
 
-model Category {
-  id          String            @id @default(cuid())
-  name        String
-  slug        String            @unique
+model Entreprise {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  slug        String  @unique
+  address     String?
+  zipCode     String?
+  city        String?
+  country     String?
+  phone       String?
+  email       String?
+  logo        String?
   description String?
-  image       String?
-  parent      Category?         @relation("SubCategory", fields: [parentId], references: [id])
-  parentId    String?
-  children    Category[]        @relation("SubCategory")
-  articles    ArticleCategory[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  titleSeo       String?
-  descriptionSeo String?
-  keywordsSeo    String?
+  landingPage Landing_Page?
+
+  metiers EntrepriseMetier[]
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
 }
 
-model Article {
-  id       String  @id @default(cuid())
-  title    String
-  slug     String  @unique
-  content  String
-  image    String?
-  author   User    @relation(fields: [authorId], references: [id])
-  authorId String
+model Metier {
+  name      String   @unique
+  slug      String   @id @unique
+  createdAt DateTime @default(now())
 
-  published   Boolean   @default(false)
-  publishedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  titleSeo       String?
-  descriptionSeo String?
-  keywordsSeo    String?
-
-  categories ArticleCategory[]
+  entreprises EntrepriseMetier[]
 }
 
-model ArticleCategory {
-  articleId  String
-  categoryId String
-  article    Article  @relation(fields: [articleId], references: [id])
-  category   Category @relation(fields: [categoryId], references: [id])
+model EntrepriseMetier {
+  entrepriseId String
+  metierId     String
+  entreprise   Entreprise @relation(fields: [entrepriseId], references: [id])
+  metier       Metier     @relation(fields: [metierId], references: [slug])
 
-  @@id([articleId, categoryId])
+  @@id([entrepriseId, metierId])
+}
+
+model Entreprise_Type {
+  name      String   @unique
+  slug      String   @id @unique
+  createdAt DateTime @default(now())
+}
+
+model Landing_Page {
+  id           String     @id @default(cuid())
+  entrepriseId String     @unique
+  entreprise   Entreprise @relation(fields: [entrepriseId], references: [id])
+}
+
+model Day {
+  id   Int    @id
+  name String @unique
+  slug String @unique
 }

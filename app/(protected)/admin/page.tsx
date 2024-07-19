@@ -2,6 +2,7 @@
 
 import { admin } from "@/actions/admin";
 import { getAdminRole } from "@/actions/get-admin-role";
+import { getSuperAdminRole } from "@/actions/get-super-admin-role";
 import { RoleGate } from "@/components/auth/role-gate";
 import { FormSuccess } from "@/components/form-success";
 import { Button } from "@/components/ui/button";
@@ -13,14 +14,18 @@ import { toast } from "sonner";
 
 const AdminPage = () => {
   const [adminRole, setAdminRole] = useState<Role | null>(null);
+  const [superAdminRole, setSuperAdminRole] = useState<Role | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  
   useEffect(() => {
     const fetchAdminRole = async () => {
-      const role = await getAdminRole();
-      setAdminRole(role);
+      const adminRole = await getAdminRole();
+      const superAdminRole = await getSuperAdminRole();
+      setAdminRole(adminRole);
+      setSuperAdminRole(superAdminRole);
       setLoading(false);
     };
-
     fetchAdminRole();
   }, []);
 
@@ -60,9 +65,9 @@ const AdminPage = () => {
         {loading && <p className="text-center">Loading...</p>}
         {!loading && (
           <>
-            {adminRole && (
+            {adminRole && superAdminRole && (
               <>
-                <RoleGate allowedRole={adminRole}>
+                <RoleGate  allowedRoles={[adminRole, superAdminRole]}>
                   <FormSuccess message="You are allowed to see this content!" />
                 </RoleGate>
                 <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-md">

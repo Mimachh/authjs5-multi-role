@@ -1,11 +1,13 @@
+
+
 "use server";
 
 import { db } from "@/lib/db";
 
-export const getAdminRole = async() => {
+export const getSuperAdminRole = async() => {
   try {
     const adminRole = await db.role.findFirst({
-      where: { slug: "admin" },
+      where: { slug: "super_admin" },
     });
 
     return adminRole;

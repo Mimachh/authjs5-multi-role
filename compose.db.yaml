@@ -4,11 +4,11 @@ services:
     image: postgres:15-alpine
     restart: always
     environment:
-      POSTGRES_USER: website_builder_saas
+      POSTGRES_USER: saas_entreprise
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: website_builder_saas
+      POSTGRES_DB: saas_entreprise
     ports: 
-      - "5432:5432"
+      - "5439:5432"
     volumes:
       - db:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql

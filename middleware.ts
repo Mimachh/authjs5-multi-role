@@ -9,7 +9,9 @@ import {
   adminRoutes,
   DEFAULT_FORBIDDEN_REDIRECT
 } from "@/next-auth-config/routes";
-import { useCheckAdminRole } from "./hooks/use-check-admin-role";
+import { useCheckAdminRole, useCheckSuperAdminRole } from "./hooks/use-check-admin-role";
+import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 
 const { auth } = NextAuth(authConfig);
 
@@ -19,7 +21,7 @@ export default auth(async (req) => {
 
   
  
-  const isAdmin = await useCheckAdminRole(req.auth?.user.roles)
+  const isAdmin = await useCheckAdminRole(req.auth?.user.roles) || await useCheckSuperAdminRole(req.auth?.user.roles);
  
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
@@ -32,6 +34,7 @@ export default auth(async (req) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
+      return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl))
     }
     return null;
@@ -54,10 +57,11 @@ export default auth(async (req) => {
 
     const encodedCallbackUrl = encodeURIComponent(callbackUrl);
 
-    return Response.redirect(new URL(
-      `/auth/login?callbackUrl=${encodedCallbackUrl}`,
-      nextUrl
-    ));
+    return NextResponse.redirect(new URL(`/auth/login?callbackUrl=${encodedCallbackUrl}`, nextUrl));
+    // return Response.redirect(new URL(
+    //   `/auth/login?callbackUrl=${encodedCallbackUrl}`,
+    //   nextUrl
+    // ));
   }
 
   return null;
